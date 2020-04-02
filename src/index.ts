@@ -1,9 +1,11 @@
 import "reflect-metadata";
+require("dotenv").config();
 import * as express from 'express';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import * as bodyParser from "body-parser";
 import container from './ioc/container';
 import './controllers/customer-orders.controller';
+const mongodbService = require('./modules/mogodb.service');
 
 const app = express();
 
@@ -25,13 +27,14 @@ let server = new InversifyExpressServer(container, null, { rootPath : '/api' }, 
  * @returns express applications
  */
 let appConfigured = server.build();
-
 /**
  * Listen for connections
  */
-let serve = appConfigured.listen(app.get("port"), () => {
+appConfigured.listen(app.get("port"), () => {
     console.log(("  App is running at http://localhost:%d in %s mode"), app.get("port"), app.get("env"));
     console.log("  Press CTRL-C to stop\n");
+    mongodbService();
 });
 
 module.exports = app;
+

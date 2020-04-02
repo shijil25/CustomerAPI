@@ -58,10 +58,10 @@ var types_1 = require("../ioc/types");
 var CustomerOrdersController = /** @class */ (function () {
     /**
      * Creates an instance of customer orders controller.
-     * @param orderService
+     * @param orderRepository
      */
-    function CustomerOrdersController(orderService) {
-        this.orderService = orderService;
+    function CustomerOrdersController(orderRepository) {
+        this.orderRepository = orderRepository;
     }
     /**
      * Https get
@@ -75,7 +75,7 @@ var CustomerOrdersController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.orderService.findAll(+req.params.id)];
+                        return [4 /*yield*/, this.orderRepository.findAll(+req.params.id)];
                     case 1:
                         orders = _a.sent();
                         if (!orders) {
@@ -106,7 +106,7 @@ var CustomerOrdersController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.orderService.findById(+req.params.id)];
+                        return [4 /*yield*/, this.orderRepository.findById(+req.params.id)];
                     case 1:
                         order = _a.sent();
                         if (!order) {
@@ -141,7 +141,7 @@ var CustomerOrdersController = /** @class */ (function () {
     ], CustomerOrdersController.prototype, "getOrder", null);
     CustomerOrdersController = __decorate([
         inversify_express_utils_1.controller('/customerorders'),
-        __param(0, inversify_1.inject(types_1.default.IOrderService)),
+        __param(0, inversify_1.inject(types_1.default.IOrderRepository)),
         __metadata("design:paramtypes", [Object])
     ], CustomerOrdersController);
     return CustomerOrdersController;

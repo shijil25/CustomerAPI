@@ -5,9 +5,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -46,43 +43,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var inversify_1 = require("inversify");
-var MongoClient = require('mongodb').MongoClient;
-var OrderRepository = /** @class */ (function () {
-    function OrderRepository() {
-        this.connectToMongo();
+var _a = require("@azure/service-bus"), ServiceBusClient = _a.ServiceBusClient, ReceiveMode = _a.ReceiveMode;
+var EventSubscribeService = /** @class */ (function () {
+    function EventSubscribeService() {
     }
-    OrderRepository.prototype.findAll = function (customerId) {
-        var query = this.collection.find({ "User.UserId": customerId });
-        return query.toArray();
-    };
-    OrderRepository.prototype.findById = function (orderId) {
-        var query = this.collection.findOne({ "OrderId": orderId });
-        return query;
-    };
-    OrderRepository.prototype.connectToMongo = function () {
+    EventSubscribeService.prototype.receive = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var client, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var connectionString, queueName, sbClient, queueClient, receiver, messages, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        client = new MongoClient(process.env.MONGODB_CONNECTION_STRING);
-                        return [4 /*yield*/, client.connect()];
+                        connectionString = "Endpoint=sb://inventorysystem.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=mRbRM6AZDmEgBm0UAE5dnPXuo1Cf+WuKFU61qthML+8=";
+                        queueName = "inventoryqueue";
+                        sbClient = ServiceBusClient.createFromConnectionString(connectionString);
+                        queueClient = sbClient.createQueueClient(queueName);
+                        receiver = queueClient.createReceiver(ReceiveMode.receiveAndDelete);
+                        _a.label = 1;
                     case 1:
-                        _b.sent();
-                        _a = this;
-                        return [4 /*yield*/, client.db(process.env.MONGODB).collection(process.env.MONGODB_COLLECTION)];
+                        _a.trys.push([1, 4, 5, 7]);
+                        console.log("Received starting...");
+                        return [4 /*yield*/, receiver.receiveMessages(1)];
                     case 2:
-                        _a.collection = _b.sent();
-                        return [2 /*return*/];
+                        messages = _a.sent();
+                        console.log("Received messages:");
+                        console.log(messages.map(function (message) { return message.body; }));
+                        return [4 /*yield*/, queueClient.close()];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 7];
+                    case 4:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [3 /*break*/, 7];
+                    case 5:
+                        console.log("Received ending...");
+                        return [4 /*yield*/, sbClient.close()];
+                    case 6:
+                        _a.sent();
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
     };
-    OrderRepository = __decorate([
-        inversify_1.injectable(),
-        __metadata("design:paramtypes", [])
-    ], OrderRepository);
-    return OrderRepository;
+    EventSubscribeService = __decorate([
+        inversify_1.injectable()
+    ], EventSubscribeService);
+    return EventSubscribeService;
 }());
-exports.OrderRepository = OrderRepository;
-//# sourceMappingURL=order.repository.js.map
+exports.EventSubscribeService = EventSubscribeService;
+//# sourceMappingURL=event-subscribe.service.js.map

@@ -1,5 +1,5 @@
 const TYPES = {
-    IOrderService: Symbol('IOrderService')
+    IOrderRepository: Symbol('IOrderRepository'),
 };
 
 export default TYPES;

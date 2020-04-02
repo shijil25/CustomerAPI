@@ -1,13 +1,4 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -45,44 +36,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var inversify_1 = require("inversify");
+var azure = require('azure');
 var MongoClient = require('mongodb').MongoClient;
-var OrderRepository = /** @class */ (function () {
-    function OrderRepository() {
-        this.connectToMongo();
-    }
-    OrderRepository.prototype.findAll = function (customerId) {
-        var query = this.collection.find({ "User.UserId": customerId });
-        return query.toArray();
-    };
-    OrderRepository.prototype.findById = function (orderId) {
-        var query = this.collection.findOne({ "OrderId": orderId });
-        return query;
-    };
-    OrderRepository.prototype.connectToMongo = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var client, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        client = new MongoClient(process.env.MONGODB_CONNECTION_STRING);
-                        return [4 /*yield*/, client.connect()];
-                    case 1:
-                        _b.sent();
-                        _a = this;
-                        return [4 /*yield*/, client.db(process.env.MONGODB).collection(process.env.MONGODB_COLLECTION)];
-                    case 2:
-                        _a.collection = _b.sent();
-                        return [2 /*return*/];
+var serviceBusService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS);
+function connectToMongoDb() {
+    return __awaiter(this, void 0, void 0, function () {
+        var client, collection;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    client = new MongoClient(process.env.MONGODB_CONNECTION_STRING);
+                    return [4 /*yield*/, client.connect()];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, client.db(process.env.MONGODB).collection(process.env.MONGODB_COLLECTION)];
+                case 2:
+                    collection = _a.sent();
+                    setInterval(saveToMongoDb, 1000, collection);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function saveToMongoDb(collection) {
+    serviceBusService.receiveQueueMessage(process.env.QUEUENAME, function (error, receivedMessage) {
+        if (!error) {
+            var data = receivedMessage.body;
+            var order = JSON.parse(data);
+            collection.insert(order, function (error, result) {
+                if (error) {
+                    console.log(error);
+                }
+                else {
+                    console.log(result.result);
                 }
             });
-        });
-    };
-    OrderRepository = __decorate([
-        inversify_1.injectable(),
-        __metadata("design:paramtypes", [])
-    ], OrderRepository);
-    return OrderRepository;
-}());
-exports.OrderRepository = OrderRepository;
-//# sourceMappingURL=order.repository.js.map
+        }
+    });
+}
+module.exports = connectToMongoDb;
+//# sourceMappingURL=mogodb.service.js.map

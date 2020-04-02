@@ -2,7 +2,7 @@ import { controller, interfaces, httpGet, request, response } from 'inversify-ex
 import * as express from 'express';
 import { inject } from 'inversify';
 import TYPES from '../ioc/types';
-import { IOrderService } from './../services/iorder.service';
+import { IOrderRepository } from '../interfaces/iorder.repository';
 
 /**
  * Customer Orders Controller
@@ -10,14 +10,14 @@ import { IOrderService } from './../services/iorder.service';
 @controller('/customerorders')
 export class CustomerOrdersController implements interfaces.Controller {
 
-    private orderService : IOrderService;
+    private orderRepository : IOrderRepository;
 
     /**
      * Creates an instance of customer orders controller.
-     * @param orderService 
+     * @param orderRepository 
      */
-    constructor(@inject(TYPES.IOrderService) orderService : IOrderService) {
-        this.orderService = orderService;
+    constructor(@inject(TYPES.IOrderRepository) orderRepository : IOrderRepository) {
+        this.orderRepository = orderRepository;
     }
 
     /**
@@ -28,7 +28,7 @@ export class CustomerOrdersController implements interfaces.Controller {
     @httpGet('/:id')
     public async getOrders(@request() req : express.Request , @response() res : express.Response) {
         try {
-            const orders = await this.orderService.findAll(+req.params.id);
+            const orders = await this.orderRepository.findAll(+req.params.id);
             if(!orders){
                 res.status(404).json("No orders found");
             } else {
@@ -47,7 +47,7 @@ export class CustomerOrdersController implements interfaces.Controller {
     @httpGet('/orders/:id')
     public async getOrder(@request() req : express.Request , @response() res : express.Response) {
         try {
-            const order = await this.orderService.findById(+req.params.id);
+            const order = await this.orderRepository.findById(+req.params.id);
             if(!order){
                 res.status(404).json("No order found");
             } else {
