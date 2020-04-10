@@ -3,9 +3,11 @@ require("dotenv").config();
 import * as express from 'express';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import * as bodyParser from "body-parser";
-import container from './ioc/container';
+import container from '../infrastructure/ioc/container';
 import './controllers/customer-orders.controller';
-const mongodbService = require('./modules/mogodb.service');
+const mongodbService = require('../modules/mogodb.service');
+const swaggerUi = require('swagger-ui-express');
+import * as swaggerDocument from './swagger.json';
 
 const app = express();
 
@@ -14,6 +16,7 @@ const app = express();
  */
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.set("port", 8090);
 

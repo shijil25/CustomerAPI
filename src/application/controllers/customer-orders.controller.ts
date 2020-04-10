@@ -1,8 +1,8 @@
 import { controller, interfaces, httpGet, request, response } from 'inversify-express-utils';
 import * as express from 'express';
 import { inject } from 'inversify';
-import TYPES from '../ioc/types';
-import { IOrderRepository } from '../interfaces/iorder.repository';
+import TYPES from '../../infrastructure/ioc/types';
+import { IOrderRepository } from '../../data/interfaces/iorder.repository';
 
 /**
  * Customer Orders Controller

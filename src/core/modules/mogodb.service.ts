@@ -1,6 +1,6 @@
 var azure = require('azure');
 const MongoClient = require('mongodb').MongoClient;
-import { Order } from '../models/order.model';
+import { Order } from '../models/index';
 var serviceBusService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS);
 
 async function connectToMongoDb() {

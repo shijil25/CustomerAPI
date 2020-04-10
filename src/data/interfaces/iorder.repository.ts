@@ -1,4 +1,4 @@
-import { Order } from '../models/order.model';
+import { Order } from '../../core/models/index';
 
 export interface IOrderRepository {
     findAll: (customerId : number) => Promise<Order[]>;

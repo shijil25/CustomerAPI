@@ -1,0 +1,66 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "version": "1.0.0",
+        "title": "Customer API",
+        "description": "Customer API using Node JS",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8090/api/",
+            "description": "Local Server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Orders",
+            "description": "API for Orders in the system"
+        }
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/customerorders/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order with given customer ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "Order with customer id"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/customerorders/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order with given ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "Order with id"
+                    }
+                ],
+                "responses": {}
+            }
+        }
+    }
+}

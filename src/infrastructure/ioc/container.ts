@@ -1,7 +1,7 @@
 import { Container } from 'inversify';
 import TYPES from './types';
-import { OrderRepository } from './../repositories/order.repository';
-import { IOrderRepository } from '../interfaces/iorder.repository';
+import { OrderRepository } from '../../data/repositories/order.repository';
+import { IOrderRepository } from '../../data/interfaces/iorder.repository';
 
 const container = new Container();
 

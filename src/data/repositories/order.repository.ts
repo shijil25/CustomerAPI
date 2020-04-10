@@ -11,7 +11,7 @@ export class OrderRepository implements IOrderRepository {
     }
  
     findAll(customerId : number) {       
-        const query = this.collection.find({"User.UserId" : customerId });      
+        const query = this.collection.find({"User.UserId" : customerId }).project({ OrderId : 1, Total : 1, OrderDate : 1 , "User.UserId" : 1});      
         return query.toArray();         
     }
 
